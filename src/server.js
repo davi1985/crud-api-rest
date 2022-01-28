@@ -1,11 +1,28 @@
 import express from "express";
+import cors from "cors";
+
 import { routes } from "./routes/routes.js";
 import { connect } from "./database/db.js";
-import e from "express";
 
 const app = express();
+
 connect();
 
+const allowedOrigins = ["http://127.0.0.1:8080"];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      let allowed = true;
+
+      if (!origin) allowed = true;
+
+      if (!allowedOrigins.includes(origin)) allowed = false;
+
+      callback(null, allowed);
+    },
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
