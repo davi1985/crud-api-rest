@@ -1,6 +1,6 @@
 import { ProductModel } from "../models/product.js";
 
-export class ProductController {
+export class ProductsController {
   async get(req, res) {
     const { id } = req.params;
 
@@ -31,5 +31,13 @@ export class ProductController {
     });
 
     return res.json(product);
+  }
+
+  async remove(req, res) {
+    const { id } = req.params;
+
+    await ProductModel.findByIdAndRemove({ _id: id });
+
+    return res.status(204).json();
   }
 }
