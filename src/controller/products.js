@@ -22,10 +22,4 @@ export class ProductController {
 
     return res.status(201).json(product);
   }
-
-  async put(req, res) {
-    const { id } = req.params;
-
-    const product = await ProductModel.findById(id);
-  }
 }
