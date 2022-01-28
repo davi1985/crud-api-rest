@@ -1,9 +1,11 @@
 import { Router } from "express";
+import { ProductController } from "../controller/products.js";
 
 const routes = Router();
 
-routes.get("/clients", (req, res) => {
-  return res.json({ message: "ok" });
-});
+routes.get("/products", new ProductController().get);
+// routes.post("/products", new ProductController().post);
+// routes.put("/products/:id", new ProductController().put);
+// routes.delete("/products/:id", new ProductController().delete);
 
 export { routes };
