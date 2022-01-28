@@ -2,22 +2,24 @@ import { ProductModel } from "../models/product.js";
 
 export class ProductController {
   async get(req, res) {
-    const products = await ProductModel.find();
+    const { id } = req.params;
 
-    return res.json(products);
+    const data = await ProductModel.find(id ? { _id: id } : null);
+
+    return res.json(data);
   }
 
-  async post(req, res) {
-    const { name, brand, price } = req.body;
+  // async post(req, res) {
+  //   const { name, brand, price } = req.body;
 
-    const product = new ProductModel({
-      name,
-      brand,
-      price,
-    });
+  //   const product = new ProductModel({
+  //     name,
+  //     brand,
+  //     price,
+  //   });
 
-    product.save();
+  //   product.save();
 
-    return res.json({ message: "Product saved" });
-  }
+  //   return res.json({ message: "Product saved" });
+  // }
 }
