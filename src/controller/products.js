@@ -9,17 +9,23 @@ export class ProductController {
     return res.json(data);
   }
 
-  // async post(req, res) {
-  //   const { name, brand, price } = req.body;
+  async post(req, res) {
+    const { name, brand, price } = req.body;
 
-  //   const product = new ProductModel({
-  //     name,
-  //     brand,
-  //     price,
-  //   });
+    const product = new ProductModel({
+      name,
+      brand,
+      price,
+    });
 
-  //   product.save();
+    product.save();
 
-  //   return res.json({ message: "Product saved" });
-  // }
+    return res.status(201).json(product);
+  }
+
+  async put(req, res) {
+    const { id } = req.params;
+
+    const product = await ProductModel.findById(id);
+  }
 }
