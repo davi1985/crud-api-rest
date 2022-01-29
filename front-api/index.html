@@ -57,22 +57,8 @@
       const form = document.querySelector("#form");
 
       // list products
-      const getProducts = async () => {
-        const response = await fetch(API_URL);
-        const products = await response.json();
 
-        const productsHtml = products
-          .map(
-            (product) => `
-              <li>
-                ${product.name} - ${product.brand} - R$ ${product.price} <a href="#" class="remove-btn" data-id="${product._id}">[Excluir]</a>
-              </li>
-            `
-          )
-          .join("");
-
-        list.innerHTML += productsHtml;
-
+      const removeButtonsEvent = async () => {
         const btnsRemove = document.querySelectorAll(".remove-btn");
 
         btnsRemove.forEach((btn) => {
@@ -85,13 +71,75 @@
               method: "DELETE",
             }).then((res) => {
               res.json().then((data) => {
-                if (data) {
+                if (data.message === "success") {
+                  list.innerHTML = "";
                   getProducts();
+
+                  alert("Produto excluido com sucesso");
+                } else {
+                  alert("Ocorreu um erro...");
                 }
               });
             });
           };
         });
+      };
+
+      const editButtonsEvent = async () => {
+        const btnsEdit = document.querySelectorAll(".edit-btn");
+
+        btnsEdit.forEach((btn) => {
+          btn.onclick = function (e) {
+            e.preventDefault();
+
+            const id = this.dataset.id;
+
+            const name = document.forms["formEdit"].name.value;
+            const brand = document.forms["formEdit"].brand.value;
+            const price = document.forms["formEdit"].price.value;
+
+            fetch(`${API_URL}/${id}`, {
+              method: "PUT",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ name, brand, price }),
+            }).then((res) => {
+              res.json().then((data) => {
+                if (data.message === "success") {
+                  list.innerHTML = "";
+                  getProducts();
+
+                  alert("Produto Editado com sucesso");
+                } else {
+                  alert("Ocorreu um erro...");
+                }
+              });
+            });
+          };
+        });
+      };
+      const getProducts = async () => {
+        const response = await fetch(API_URL);
+        const products = await response.json();
+
+        const productsHtml = products
+          .map(
+            (product) => `
+              <li>
+                ${product.name} - ${product.brand} - R$ ${product.price} 
+                <a href="#" class="edit-btn" data-id="${product._id}">[Editar]</a>
+                <a href="#" class="remove-btn" data-id="${product._id}">[Excluir]</a>
+              </li>
+            `
+          )
+          .join("");
+
+        list.innerHTML += productsHtml;
+
+        editButtonsEvent();
+        removeButtonsEvent();
       };
 
       getProducts();

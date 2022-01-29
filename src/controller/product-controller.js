@@ -38,6 +38,6 @@ export class ProductsController {
 
     await ProductModel.findByIdAndRemove({ _id: id });
 
-    return res.status(204).json();
+    return res.json({ message: "success" });
   }
 }
