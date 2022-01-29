@@ -65,13 +65,33 @@
           .map(
             (product) => `
               <li>
-                ${product.name} - ${product.brand} - R$ ${product.price}
+                ${product.name} - ${product.brand} - R$ ${product.price} <a href="#" class="remove-btn" data-id="${product._id}">[Excluir]</a>
               </li>
             `
           )
           .join("");
 
         list.innerHTML += productsHtml;
+
+        const btnsRemove = document.querySelectorAll(".remove-btn");
+
+        btnsRemove.forEach((btn) => {
+          btn.onclick = function (e) {
+            e.preventDefault();
+
+            const id = this.dataset.id;
+
+            fetch(`${API_URL}/${id}`, {
+              method: "DELETE",
+            }).then((res) => {
+              res.json().then((data) => {
+                if (data) {
+                  getProducts();
+                }
+              });
+            });
+          };
+        });
       };
 
       getProducts();
@@ -101,6 +121,8 @@
 
         getProducts();
       });
+
+      // remove product
     </script>
   </body>
 </html>
