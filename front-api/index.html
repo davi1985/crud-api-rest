@@ -5,12 +5,102 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        max-width: 400px;
+      }
+
+      form div {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+      }
+    </style>
   </head>
   <body>
+    <h2>Listagem de produtos</h2>
+
+    <ul class="products-list"></ul>
+
+    <hr />
+
+    <h2>Cadastro de produtos</h2>
+
+    <form id="form">
+      <div>
+        <label> Nome do produto </label>
+        <input type="text" name="name" required />
+      </div>
+
+      <div>
+        <label>Marca</label>
+        <input type="text" name="brand" required />
+      </div>
+
+      <div>
+        <label>Preço</label>
+        <input type="text" name="price" required />
+      </div>
+
+      <button type="submit">Cadastrar</button>
+    </form>
+
     <script>
-      fetch("http://localhost:3333/api/products").then((res) =>
-        res.json().then((data) => console.log(data))
-      );
+      const API_URL = "http://localhost:3333/api/products";
+      const list = document.querySelector(".products-list");
+      const form = document.querySelector("#form");
+
+      // list products
+      const getProducts = async () => {
+        const response = await fetch(API_URL);
+        const products = await response.json();
+
+        const productsHtml = products
+          .map(
+            (product) => `
+              <li>
+                ${product.name} - ${product.brand} - R$ ${product.price}
+              </li>
+            `
+          )
+          .join("");
+
+        list.innerHTML += productsHtml;
+      };
+
+      getProducts();
+
+      // save new product
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const name = document.forms["form"].name.value;
+        const brand = document.forms["form"].brand.value;
+        const price = document.forms["form"].price.value;
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, brand, price }),
+        });
+
+        console.log(await response.json());
+
+        form.reset();
+
+        list.innerHTML = "";
+
+        getProducts();
+      });
     </script>
   </body>
 </html>
